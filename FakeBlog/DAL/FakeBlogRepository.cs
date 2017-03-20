@@ -8,10 +8,11 @@ namespace FakeBlog.DAL
 {
     public class FakeBlogRepository : IRepository
     {
-        public FakeBlogContext Context;
+        public FakeBlogContext Context { get; set; }
 
         public FakeBlogRepository()
         {
+            Context = new FakeBlogContext();
         }
 
         public FakeBlogRepository(FakeBlogContext context)
@@ -19,39 +20,56 @@ namespace FakeBlog.DAL
             Context = context;
         }
 
-        public void AddPost(Post testPost, ApplicationUser user)
+        public void AddPost(Post newPost, ApplicationUser userHere) 
         {
-            throw new NotImplementedException();
-        }
-
-        public void EditPostTitle(int postId, string title)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void EditPostBody(int postId, string contents)
-        {
-            throw new NotImplementedException();
+            Context.Posts.Add(newPost);
+            Context.SaveChanges();
         }
 
         public Post GetPost(int postId)
         {
-            throw new NotImplementedException();
+            Post postIWant = Context.Posts.FirstOrDefault(p => p.PostId == postId);
+            return postIWant;
         }
 
-        public List<Post> GetPostsFromAuthor(string authorId)
+        public void EditPostBody(int postId, string newContents)
         {
-            throw new NotImplementedException();
+            Post postToEdit = GetPost(postId);
+            if (postToEdit.Contents != null)
+            {
+                postToEdit.Contents = newContents;
+                Context.SaveChanges();
+            }
+        }
+
+        public void EditPostTitle(int postId, string newTitle)
+        {
+            Post postToEdit = GetPost(postId);
+            if (postToEdit.Title != null)
+            {
+                postToEdit.Title = newTitle;
+                Context.SaveChanges();
+            }
         }
 
         public void PublishPost(int postId)
         {
-            throw new NotImplementedException();
+            Post postToEdit = GetPost(postId);
+            if (postToEdit.IsDraft.Equals(true))
+            {
+                postToEdit.IsDraft = false;
+                Context.SaveChanges();
+            }
         }
 
         public void RemovePost(int postId)
         {
-            throw new NotImplementedException();
+            Post postToRemove = GetPost(postId);
+            if (postToRemove != null)
+            {
+                Context.Posts.Remove(postToRemove);
+                Context.SaveChanges();
+            }
         }
     }
 }
