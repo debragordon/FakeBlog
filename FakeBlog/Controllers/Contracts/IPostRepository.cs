@@ -11,7 +11,7 @@ namespace FakeBlog.Contracts.Controllers
     {
         // List of methods to help deliver features
         // Create
-        void AddPost(string name, ApplicationUser userHere);
+        void AddPost(string name, string contents, ApplicationUser userHere);
 
         // Read
         Post GetPost(int postId);
