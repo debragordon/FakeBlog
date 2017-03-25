@@ -5,13 +5,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FakeBlog.DAL
+namespace FakeBlog.Contracts.Controllers
 {
     public interface IPostRepository
     {
         // List of methods to help deliver features
         // Create
-        void AddPost(Post newPost, ApplicationUser userHere);
+        void AddPost(string name, ApplicationUser userHere);
 
         // Read
         Post GetPost(int postId);

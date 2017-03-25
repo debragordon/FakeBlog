@@ -1,19 +1,53 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+using System.Configuration;
+using System.Data;
+using System.Data.SqlClient;
+using System.Diagnostics;
 using FakeBlog.Models;
+using FakeBlog.Contracts.Controllers;
 
 namespace FakeBlog.DAL
 {
     public class FakeBlogRepository : IPostRepository
     {
-        public void AddPost(Post newPost, ApplicationUser userHere) 
+        IDbConnection _blogConnection;
+
+        public FakeBlogRepository(IDbConnection blogConnection)
         {
-            //Context.Posts.Add(newPost);
-            //Context.SaveChanges();
+            _blogConnection = blogConnection;
         }
 
+        public void AddPost(string name, ApplicationUser owner) 
+        {
+            _blogConnection.Open();
+
+            try
+            {
+                var addPostCommand = _blogConnection.CreateCommand();
+                addPostCommand.CommandText = "Insert into Boards(Name,Owner_Id) values(@name,@ownerId)";
+                var nameParameter = new SqlParameter("name", SqlDbType.VarChar);
+                nameParameter.Value = name;
+                addPostCommand.Parameters.Add(nameParameter);
+                var ownerParameter = new SqlParameter("owner", SqlDbType.Int);
+                ownerParameter.Value = owner.Id;
+                addPostCommand.Parameters.Add(ownerParameter);
+
+                addPostCommand.ExecuteNonQuery();
+            }
+            catch (SqlException ex)
+            {
+                Debug.WriteLine(ex.Message);
+                Debug.WriteLine(ex.StackTrace);
+            }
+            finally
+            {
+                _blogConnection.Close();
+            }
+
+        }
+
+        // stopped here
         public Post GetPost(int postId)
         {
             //Post postIWant = Context.Posts.FirstOrDefault(p => p.PostId == postId);
