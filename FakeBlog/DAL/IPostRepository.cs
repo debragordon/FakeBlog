@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace FakeBlog.DAL
 {
-    public interface IRepository
+    public interface IPostRepository
     {
         // List of methods to help deliver features
         // Create
